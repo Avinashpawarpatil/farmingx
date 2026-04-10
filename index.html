@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AgroRent — Farm Equipment Rentals</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --soil: #2C1A0E;
+    --bark: #4A2C17;
+    --harvest: #D4882B;
+    --wheat: #F2C96B;
+    --sage: #5A7A3A;
+    --leaf: #7FB040;
+    --sky: #C8E6FA;
+    --cream: #FAF4E8;
+    --white: #FFFFFF;
+    --text: #1E1206;
+    --muted: #7A6650;
+    --card-bg: #FFFDF7;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1rem 4rem;
+    background: rgba(44,26,14,0.96);
+    backdrop-filter: blur(10px);
+    border-bottom: 2px solid var(--harvest);
+  }
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.7rem; font-weight: 900;
+    color: var(--wheat);
+    letter-spacing: -0.5px;
+  }
+  .nav-logo span { color: var(--leaf); }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a {
+    color: var(--cream); text-decoration: none;
+    font-size: 0.9rem; font-weight: 500; letter-spacing: 0.5px;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--wheat); }
+  .nav-cta {
+    background: var(--harvest); color: var(--soil);
+    padding: 0.55rem 1.4rem; border-radius: 4px;
+    font-weight: 600; font-size: 0.88rem;
+    text-decoration: none; transition: background 0.2s;
+  }
+  .nav-cta:hover { background: var(--wheat); }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh;
+    background:
+      linear-gradient(160deg, rgba(44,26,14,0.88) 0%, rgba(90,122,58,0.75) 100%),
+      url('https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=1600&q=80') center/cover no-repeat;
+    display: flex; flex-direction: column;
+    align-items: flex-start; justify-content: center;
+    padding: 0 4rem;
+    position: relative; overflow: hidden;
+  }
+  #hero::after {
+    content: '';
+    position: absolute; bottom: -2px; left: 0; right: 0; height: 80px;
+    background: var(--cream);
+    clip-path: ellipse(55% 100% at 50% 100%);
+  }
+  .hero-badge {
+    background: var(--harvest); color: var(--soil);
+    font-size: 0.75rem; font-weight: 600; letter-spacing: 1.5px;
+    text-transform: uppercase; padding: 0.4rem 1rem; border-radius: 2px;
+    margin-bottom: 1.2rem;
+    animation: fadeUp 0.7s ease both;
+  }
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.8rem, 6vw, 5rem);
+    font-weight: 900; line-height: 1.1;
+    color: var(--white); max-width: 700px;
+    animation: fadeUp 0.7s 0.1s ease both;
+  }
+  .hero-title em { color: var(--wheat); font-style: normal; }
+  .hero-sub {
+    margin-top: 1.2rem; max-width: 520px;
+    color: rgba(255,255,255,0.82); font-size: 1.1rem; line-height: 1.7;
+    animation: fadeUp 0.7s 0.2s ease both;
+  }
+  .hero-actions {
+    margin-top: 2.2rem; display: flex; gap: 1rem;
+    animation: fadeUp 0.7s 0.3s ease both;
+  }
+  .btn-primary {
+    background: var(--harvest); color: var(--soil);
+    padding: 0.85rem 2rem; border-radius: 5px;
+    font-weight: 700; font-size: 1rem;
+    text-decoration: none; transition: all 0.2s;
+    border: 2px solid transparent;
+  }
+  .btn-primary:hover { background: var(--wheat); transform: translateY(-2px); }
+  .btn-outline {
+    background: transparent; color: var(--white);
+    padding: 0.85rem 2rem; border-radius: 5px;
+    font-weight: 600; font-size: 1rem;
+    text-decoration: none; border: 2px solid rgba(255,255,255,0.5);
+    transition: all 0.2s;
+  }
+  .btn-outline:hover { border-color: var(--wheat); color: var(--wheat); }
+  .hero-stats {
+    margin-top: 3.5rem; display: flex; gap: 3rem;
+    animation: fadeUp 0.7s 0.4s ease both;
+  }
+  .stat-item { text-align: left; }
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem; font-weight: 900;
+    color: var(--wheat);
+  }
+  .stat-label { font-size: 0.8rem; color: rgba(255,255,255,0.65); letter-spacing: 0.5px; }
+
+  /* ── SLOGAN TICKER ── */
+  .ticker-wrap {
+    background: var(--sage); overflow: hidden;
+    padding: 0.9rem 0;
+    border-top: 3px solid var(--leaf);
+    border-bottom: 3px solid var(--leaf);
+  }
+  .ticker {
+    display: flex; gap: 0;
+    animation: ticker 28s linear infinite;
+    white-space: nowrap;
+  }
+  .ticker-item {
+    padding: 0 3rem;
+    color: var(--white); font-size: 0.88rem;
+    font-weight: 600; letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .ticker-item::before {
+    content: '🌾 ';
+  }
+
+  /* ── SECTION COMMON ── */
+  section { padding: 5rem 4rem; }
+  .section-label {
+    font-size: 0.75rem; font-weight: 600;
+    letter-spacing: 2.5px; text-transform: uppercase;
+    color: var(--sage); margin-bottom: 0.5rem;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 4vw, 2.8rem);
+    font-weight: 900; line-height: 1.2;
+    color: var(--soil); max-width: 600px;
+  }
+  .section-title em { color: var(--harvest); font-style: normal; }
+  .section-header { margin-bottom: 3rem; }
+
+  /* ── EQUIPMENT CARDS ── */
+  #equipment { background: var(--cream); }
+  .equip-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.8rem;
+  }
+  .equip-card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1.5px solid rgba(74,44,23,0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+    position: relative;
+  }
+  .equip-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 50px rgba(44,26,14,0.18);
+  }
+  .equip-img {
+    width: 100%; height: 200px; object-fit: cover;
+    background: linear-gradient(135deg, #c8e6c9, #a5d6a7);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 5rem;
+  }
+  .equip-badge {
+    position: absolute; top: 1rem; right: 1rem;
+    background: var(--sage); color: white;
+    font-size: 0.72rem; font-weight: 600;
+    padding: 0.3rem 0.7rem; border-radius: 30px;
+    letter-spacing: 0.5px;
+  }
+  .equip-body { padding: 1.4rem; }
+  .equip-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem; font-weight: 700;
+    color: var(--soil); margin-bottom: 0.4rem;
+  }
+  .equip-desc { font-size: 0.87rem; color: var(--muted); line-height: 1.6; margin-bottom: 1rem; }
+  .equip-price {
+    font-size: 1.1rem; font-weight: 700; color: var(--harvest);
+    margin-bottom: 1rem;
+  }
+  .equip-price span { font-size: 0.78rem; font-weight: 400; color: var(--muted); }
+  .equip-features { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.2rem; }
+  .tag {
+    background: rgba(90,122,58,0.1); color: var(--sage);
+    font-size: 0.72rem; font-weight: 600; padding: 0.25rem 0.6rem;
+    border-radius: 30px; letter-spacing: 0.3px;
+  }
+  .btn-rent {
+    width: 100%; padding: 0.7rem;
+    background: var(--soil); color: var(--wheat);
+    border: none; border-radius: 6px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600; font-size: 0.9rem;
+    cursor: pointer; transition: background 0.2s;
+  }
+  .btn-rent:hover { background: var(--bark); }
+
+  /* ── HOW IT WORKS ── */
+  #how { background: var(--soil); }
+  #how .section-title { color: var(--wheat); max-width: 100%; }
+  #how .section-label { color: var(--harvest); }
+  .steps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 2rem; margin-top: 3rem;
+  }
+  .step-card {
+    padding: 2rem;
+    border: 1.5px solid rgba(242,201,107,0.2);
+    border-radius: 10px;
+    position: relative;
+    transition: border-color 0.3s;
+  }
+  .step-card:hover { border-color: var(--harvest); }
+  .step-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 4rem; font-weight: 900;
+    color: rgba(242,201,107,0.12);
+    position: absolute; top: 0.5rem; right: 1rem;
+    line-height: 1;
+  }
+  .step-icon { font-size: 2.2rem; margin-bottom: 1rem; }
+  .step-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem; font-weight: 700;
+    color: var(--wheat); margin-bottom: 0.6rem;
+  }
+  .step-desc { font-size: 0.88rem; color: rgba(255,255,255,0.6); line-height: 1.7; }
+
+  /* ── SLOGANS ── */
+  #slogans {
+    background: linear-gradient(135deg, var(--leaf) 0%, var(--sage) 100%);
+    padding: 4rem;
+  }
+  .slogans-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem;
+  }
+  .slogan-card {
+    background: rgba(255,255,255,0.12);
+    border: 1.5px solid rgba(255,255,255,0.25);
+    border-radius: 12px; padding: 2rem;
+    text-align: center;
+    transition: background 0.3s, transform 0.3s;
+  }
+  .slogan-card:hover { background: rgba(255,255,255,0.22); transform: scale(1.02); }
+  .slogan-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+  .slogan-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem; font-weight: 700;
+    color: var(--white); line-height: 1.5;
+  }
+
+  /* ── TESTIMONIALS ── */
+  #testimonials { background: var(--cream); }
+  .testi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+  .testi-card {
+    background: var(--card-bg);
+    border-radius: 10px; padding: 1.8rem;
+    border-left: 4px solid var(--harvest);
+    border: 1.5px solid rgba(74,44,23,0.1);
+    border-left: 4px solid var(--harvest);
+  }
+  .testi-text { font-size: 0.93rem; color: var(--muted); line-height: 1.8; font-style: italic; margin-bottom: 1.2rem; }
+  .testi-author { font-weight: 600; color: var(--soil); font-size: 0.9rem; }
+  .testi-role { font-size: 0.78rem; color: var(--muted); }
+  .stars { color: var(--harvest); margin-bottom: 0.8rem; font-size: 0.9rem; }
+
+  /* ── FOUNDERS ── */
+  #founders { background: var(--soil); }
+  #founders .section-title { color: var(--wheat); }
+  #founders .section-label { color: var(--harvest); }
+  #founders .section-sub {
+    color: rgba(255,255,255,0.55); font-size: 0.95rem;
+    max-width: 520px; line-height: 1.7; margin-top: 0.8rem;
+  }
+  .founders-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 2rem; margin-top: 3rem;
+  }
+  .founder-card {
+    text-align: center;
+    padding: 2rem 1.5rem;
+    background: rgba(255,255,255,0.04);
+    border: 1.5px solid rgba(242,201,107,0.15);
+    border-radius: 16px;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+  .founder-card:hover {
+    border-color: var(--harvest);
+    transform: translateY(-6px);
+  }
+  .founder-img-wrap {
+    width: 120px; height: 120px;
+    border-radius: 50%;
+    margin: 0 auto 1.2rem;
+    background: linear-gradient(135deg, var(--harvest), var(--sage));
+    overflow: hidden;
+    border: 3px solid var(--harvest);
+    padding: 3px;
+  }
+  .founder-img-wrap img {
+    width: 100%; height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    /* Placeholder: replace src with actual image URL */
+    background: var(--bark);
+  }
+  .founder-img-placeholder {
+    width: 100%; height: 100%;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #5A7A3A, #2C1A0E);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2.5rem;
+  }
+  .founder-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem; font-weight: 700;
+    color: var(--wheat); margin-bottom: 0.3rem;
+  }
+  .founder-role {
+    font-size: 0.8rem; color: var(--harvest);
+    font-weight: 600; letter-spacing: 0.8px;
+    text-transform: uppercase; margin-bottom: 0.6rem;
+  }
+  .founder-bio { font-size: 0.82rem; color: rgba(255,255,255,0.5); line-height: 1.6; }
+  .founder-socials { margin-top: 1rem; display: flex; justify-content: center; gap: 0.7rem; }
+  .founder-socials a {
+    color: rgba(255,255,255,0.4); font-size: 0.85rem;
+    transition: color 0.2s; text-decoration: none;
+  }
+  .founder-socials a:hover { color: var(--wheat); }
+
+  /* ── CONTACT ── */
+  #contact {
+    background: linear-gradient(135deg, #f5e6cc 0%, #e8f5e9 100%);
+    text-align: center; padding: 5rem 4rem;
+  }
+  #contact .section-title { max-width: 100%; }
+  .contact-sub { color: var(--muted); max-width: 500px; margin: 1rem auto 2.5rem; line-height: 1.7; }
+  .contact-form {
+    max-width: 560px; margin: 0 auto;
+    display: flex; flex-direction: column; gap: 1rem;
+  }
+  .form-row { display: flex; gap: 1rem; }
+  .contact-form input, .contact-form textarea, .contact-form select {
+    width: 100%; padding: 0.85rem 1.2rem;
+    border: 1.5px solid rgba(74,44,23,0.18);
+    border-radius: 6px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.93rem; background: white;
+    color: var(--text); outline: none;
+    transition: border-color 0.2s;
+  }
+  .contact-form input:focus,
+  .contact-form textarea:focus,
+  .contact-form select:focus { border-color: var(--harvest); }
+  .contact-form textarea { resize: vertical; min-height: 120px; }
+  .btn-submit {
+    background: var(--soil); color: var(--wheat);
+    padding: 0.9rem 2rem; border: none; border-radius: 6px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700; font-size: 1rem;
+    cursor: pointer; transition: background 0.2s;
+  }
+  .btn-submit:hover { background: var(--bark); }
+
+  /* ── FOOTER ── */
+  footer {
+    background: #1A0D06;
+    padding: 3rem 4rem 1.5rem;
+  }
+  .footer-top {
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 2rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .footer-brand .nav-logo { font-size: 1.5rem; display: block; margin-bottom: 0.7rem; }
+  .footer-brand p { font-size: 0.85rem; color: rgba(255,255,255,0.4); max-width: 250px; line-height: 1.7; }
+  .footer-links h4 { color: var(--wheat); font-size: 0.85rem; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 1rem; }
+  .footer-links ul { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+  .footer-links a { color: rgba(255,255,255,0.45); font-size: 0.85rem; text-decoration: none; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--wheat); }
+  .footer-bottom {
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
+    padding-top: 1.5rem; font-size: 0.8rem; color: rgba(255,255,255,0.25);
+  }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; z-index: 200;
+    background: rgba(0,0,0,0.65); backdrop-filter: blur(4px);
+    align-items: center; justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--card-bg); border-radius: 16px;
+    padding: 2.5rem; max-width: 480px; width: 90%;
+    position: relative; animation: popIn 0.3s ease both;
+  }
+  .modal-close {
+    position: absolute; top: 1rem; right: 1.2rem;
+    background: none; border: none; font-size: 1.5rem;
+    cursor: pointer; color: var(--muted);
+  }
+  .modal h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem; color: var(--soil); margin-bottom: 0.5rem;
+  }
+  .modal p { color: var(--muted); font-size: 0.9rem; margin-bottom: 1.5rem; }
+  .modal-form { display: flex; flex-direction: column; gap: 0.9rem; }
+  .modal-form input, .modal-form select {
+    padding: 0.8rem 1rem; border: 1.5px solid rgba(74,44,23,0.2);
+    border-radius: 6px; font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem; outline: none;
+    transition: border-color 0.2s;
+  }
+  .modal-form input:focus, .modal-form select:focus { border-color: var(--harvest); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(28px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes ticker {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+  @keyframes popIn {
+    from { opacity: 0; transform: scale(0.92); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    section { padding: 3.5rem 1.5rem; }
+    #hero { padding: 0 1.5rem; }
+    .hero-stats { gap: 1.5rem; }
+    .form-row { flex-direction: column; }
+    footer { padding: 2rem 1.5rem 1rem; }
+    #contact { padding: 3.5rem 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <div class="nav-logo">Agro<span>Rent</span></div>
+  <ul class="nav-links">
+    <li><a href="#equipment">Equipment</a></li>
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#testimonials">Reviews</a></li>
+    <li><a href="#founders">About Us</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="#equipment" class="nav-cta">Browse Equipment</a>
+</nav>
+
+<!-- ── HERO ── -->
+<section id="hero">
+  <div class="hero-badge">🌾 India's #1 Farm Equipment Rental</div>
+  <h1 class="hero-title">
+    Grow More.<br>
+    Spend <em>Less.</em><br>
+    Farm Smarter.
+  </h1>
+  <p class="hero-sub">
+    Rent high-quality tractors, harvesters, and precision farming equipment by the day. No ownership hassles — just productive harvests.
+  </p>
+  <div class="hero-actions">
+    <a href="#equipment" class="btn-primary">Rent Equipment Now</a>
+    <a href="#how" class="btn-outline">See How It Works</a>
+  </div>
+  <div class="hero-stats">
+    <div class="stat-item">
+      <div class="stat-num">500+</div>
+      <div class="stat-label">Equipment Units</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">12K+</div>
+      <div class="stat-label">Happy Farmers</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">28</div>
+      <div class="stat-label">Districts Covered</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">4.9★</div>
+      <div class="stat-label">Average Rating</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── TICKER ── -->
+<div class="ticker-wrap">
+  <div class="ticker">
+    <span class="ticker-item">Rent Today, Harvest Tomorrow</span>
+    <span class="ticker-item">From Seed to Yield — We've Got You</span>
+    <span class="ticker-item">Modern Machines, Ancient Wisdom</span>
+    <span class="ticker-item">Empowering Every Farmer</span>
+    <span class="ticker-item">Less Investment, More Production</span>
+    <span class="ticker-item">The Future of Farming is Shared</span>
+    <!-- duplicate for seamless loop -->
+    <span class="ticker-item">Rent Today, Harvest Tomorrow</span>
+    <span class="ticker-item">From Seed to Yield — We've Got You</span>
+    <span class="ticker-item">Modern Machines, Ancient Wisdom</span>
+    <span class="ticker-item">Empowering Every Farmer</span>
+    <span class="ticker-item">Less Investment, More Production</span>
+    <span class="ticker-item">The Future of Farming is Shared</span>
+  </div>
+</div>
+
+<!-- ── EQUIPMENT ── -->
+<section id="equipment">
+  <div class="section-header">
+    <div class="section-label">Our Fleet</div>
+    <h2 class="section-title">Premium Farm Equipment <em>Ready to Rent</em></h2>
+  </div>
+  <div class="equip-grid">
+
+    <div class="equip-card">
+      <div class="equip-img">🚜</div>
+      <div class="equip-badge">Most Rented</div>
+      <div class="equip-body">
+        <div class="equip-name">Heavy Duty Tractor</div>
+        <p class="equip-desc">55HP four-wheel drive tractor ideal for ploughing, tilling, and hauling across all terrains.</p>
+        <div class="equip-price">₹1,800 <span>/ day</span></div>
+        <div class="equip-features">
+          <span class="tag">55HP</span><span class="tag">4WD</span><span class="tag">PTO</span>
+        </div>
+        <button class="btn-rent" onclick="openModal('Heavy Duty Tractor', '₹1,800/day')">Rent Now</button>
+      </div>
+    </div>
+
+    <div class="equip-card">
+      <div class="equip-img">🌾</div>
+      <div class="equip-badge">Seasonal</div>
+      <div class="equip-body">
+        <div class="equip-name">Combine Harvester</div>
+        <p class="equip-desc">Self-propelled harvester for wheat, rice, and soybean — cuts, threshes, and cleans in one pass.</p>
+        <div class="equip-price">₹6,500 <span>/ day</span></div>
+        <div class="equip-features">
+          <span class="tag">Multi-crop</span><span class="tag">GPS</span><span class="tag">AC Cabin</span>
+        </div>
+        <button class="btn-rent" onclick="openModal('Combine Harvester', '₹6,500/day')">Rent Now</button>
+      </div>
+    </div>
+
+    <div class="equip-card">
+      <div class="equip-img">💧</div>
+      <div class="equip-badge">New</div>
+      <div class="equip-body">
+        <div class="equip-name">Drip Irrigation Kit</div>
+        <p class="equip-desc">Complete drip irrigation setup for up to 2 acres. Saves 50% water, improves yield dramatically.</p>
+        <div class="equip-price">₹850 <span>/ day</span></div>
+        <div class="equip-features">
+          <span class="tag">2 Acres</span><span class="tag">Drip</span><span class="tag">Timer</span>
+        </div>
+        <button class="btn-rent" onclick="openModal('Drip Irrigation Kit', '₹850/day')">Rent Now</button>
+      </div>
+    </div>
+
+    <div class="equip-card">
+      <div class="equip-img">🚁</div>
+      <div class="equip-badge">Premium</div>
+      <div class="equip-body">
+        <div class="equip-name">Agri Drone (Sprayer)</div>
+        <p class="equip-desc">10-litre payload agricultural drone for precision pesticide and fertilizer spraying. Covers 1 acre in 10 minutes.</p>
+        <div class="equip-price">₹3,200 <span>/ day</span></div>
+        <div class="equip-features">
+          <span class="tag">10L Tank</span><span class="tag">GPS Auto</span><span class="tag">30min fly</span>
+        </div>
+        <button class="btn-rent" onclick="openModal('Agri Drone (Sprayer)', '₹3,200/day')">Rent Now</button>
+      </div>
+    </div>
+
+    <div class="equip-card">
+      <div class="equip-img">🔧</div>
+      <div class="equip-body">
+        <div class="equip-name">Rotavator</div>
+        <p class="equip-desc">Tractor-mounted rotary tiller for deep soil preparation. Compatible with all major tractor brands.</p>
+        <div class="equip-price">₹700 <span>/ day</span></div>
+        <div class="equip-features">
+          <span class="tag">72 Blades</span><span class="tag">6ft Width</span>
+        </div>
+        <button class="btn-rent" onclick="openModal('Rotavator', '₹700/day')">Rent Now</button>
+      </div>
+    </div>
+
+    <div class="equip-card">
+      <div class="equip-img">🌱</div>
+      <div class="equip-body">
+        <div class="equip-name">Seed Drill Machine</div>
+        <p class="equip-desc">Precision seed drill for uniform planting depth and spacing. Reduces seed waste by up to 30%.</p>
+        <div class="equip-price">₹950 <span>/ day</span></div>
+        <div class="equip-features">
+          <span class="tag">9-row</span><span class="tag">Fertilizer</span>
+        </div>
+        <button class="btn-rent" onclick="openModal('Seed Drill Machine', '₹950/day')">Rent Now</button>
+      </div>
+    </div>
+
+    <div class="equip-card">
+      <div class="equip-img">🚛</div>
+      <div class="equip-body">
+        <div class="equip-name">Mini Tractor (25HP)</div>
+        <p class="equip-desc">Compact and fuel-efficient mini tractor for orchards, vegetable farms, and narrow field rows.</p>
+        <div class="equip-price">₹1,100 <span>/ day</span></div>
+        <div class="equip-features">
+          <span class="tag">25HP</span><span class="tag">Compact</span><span class="tag">Fuel-saver</span>
+        </div>
+        <button class="btn-rent" onclick="openModal('Mini Tractor (25HP)', '₹1,100/day')">Rent Now</button>
+      </div>
+    </div>
+
+    <div class="equip-card">
+      <div class="equip-img">⚙️</div>
+      <div class="equip-badge">Popular</div>
+      <div class="equip-body">
+        <div class="equip-name">Power Thresher</div>
+        <p class="equip-desc">High-capacity thresher for wheat and paddy. Processes up to 800 kg/hour with minimal grain loss.</p>
+        <div class="equip-price">₹1,400 <span>/ day</span></div>
+        <div class="equip-features">
+          <span class="tag">800kg/hr</span><span class="tag">Paddy/Wheat</span>
+        </div>
+        <button class="btn-rent" onclick="openModal('Power Thresher', '₹1,400/day')">Rent Now</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── HOW IT WORKS ── -->
+<section id="how">
+  <div class="section-header">
+    <div class="section-label">Simple Process</div>
+    <h2 class="section-title" style="color:var(--wheat);">Renting is as Easy as <em>1-2-3</em></h2>
+  </div>
+  <div class="steps-grid">
+    <div class="step-card">
+      <div class="step-num">01</div>
+      <div class="step-icon">🔍</div>
+      <div class="step-title">Browse & Choose</div>
+      <p class="step-desc">Explore our entire fleet. Filter by equipment type, price, and availability in your district.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">02</div>
+      <div class="step-icon">📅</div>
+      <div class="step-title">Book & Confirm</div>
+      <p class="step-desc">Select your rental dates, provide field location, and confirm your booking online in minutes.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">03</div>
+      <div class="step-icon">🚚</div>
+      <div class="step-title">We Deliver</div>
+      <p class="step-desc">Our team delivers the equipment to your farm gate, ready to use — with a certified operator if needed.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">04</div>
+      <div class="step-icon">🌾</div>
+      <div class="step-title">Farm & Return</div>
+      <p class="step-desc">Complete your farm work. We collect the equipment once your rental period is over. No hassles.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── SLOGANS ── -->
+<section id="slogans">
+  <div style="text-align:center; margin-bottom:2.5rem;">
+    <div class="section-label" style="color:rgba(255,255,255,0.7)">Our Philosophy</div>
+    <h2 class="section-title" style="color:white; max-width:100%; text-align:center;">Words We <em style="color:var(--wheat)">Farm By</em></h2>
+  </div>
+  <div class="slogans-grid">
+    <div class="slogan-card">
+      <div class="slogan-icon">🌱</div>
+      <div class="slogan-text">"A farmer's soil is his soul — we protect both."</div>
+    </div>
+    <div class="slogan-card">
+      <div class="slogan-icon">🚜</div>
+      <div class="slogan-text">"Rent the machine, keep the profit."</div>
+    </div>
+    <div class="slogan-card">
+      <div class="slogan-icon">☀️</div>
+      <div class="slogan-text">"Every sunrise deserves a field that's ready."</div>
+    </div>
+    <div class="slogan-card">
+      <div class="slogan-icon">🤝</div>
+      <div class="slogan-text">"Your harvest is our mission."</div>
+    </div>
+    <div class="slogan-card">
+      <div class="slogan-icon">💪</div>
+      <div class="slogan-text">"Big machines. Small costs. Mighty yields."</div>
+    </div>
+    <div class="slogan-card">
+      <div class="slogan-icon">🌾</div>
+      <div class="slogan-text">"Rooted in the earth, growing with technology."</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── TESTIMONIALS ── -->
+<section id="testimonials">
+  <div class="section-header">
+    <div class="section-label">What Farmers Say</div>
+    <h2 class="section-title">Trusted by <em>Thousands</em> of Farmers</h2>
+  </div>
+  <div class="testi-grid">
+    <div class="testi-card">
+      <div class="stars">★★★★★</div>
+      <p class="testi-text">"Rented a combine harvester for paddy season. Delivered on time, worked perfectly. Saved me ₹2 lakh compared to hiring labour. Will use every season!"</p>
+      <div class="testi-author">Ramesh Kulkarni</div>
+      <div class="testi-role">Farmer · Pune, Maharashtra</div>
+    </div>
+    <div class="testi-card">
+      <div class="stars">★★★★★</div>
+      <p class="testi-text">"The agri drone service is a game-changer. My 5-acre cotton field was sprayed in 2 hours. No more manual spraying risks. AgroRent is the future!"</p>
+      <div class="testi-author">Sunita Deshmukh</div>
+      <div class="testi-role">Progressive Farmer · Nagpur, Maharashtra</div>
+    </div>
+    <div class="testi-card">
+      <div class="stars">★★★★☆</div>
+      <p class="testi-text">"Easy booking, polite delivery team, and the tractor was in excellent condition. The pricing is fair and transparent. Highly recommend to fellow farmers."</p>
+      <div class="testi-author">Vijay Shinde</div>
+      <div class="testi-role">Farmer · Solapur, Maharashtra</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOUNDERS ── -->
+<section id="founders">
+  <div class="section-header">
+    <div class="section-label">The Team</div>
+    <h2 class="section-title">Meet the <em>Founders</em></h2>
+    <p class="section-sub">Born from farming families, built by engineers — we exist to make modern agriculture accessible to every farmer.</p>
+  </div>
+  <div class="founders-grid">
+
+    <div class="founder-card">
+      <div class="founder-img-wrap">
+        <!-- Replace src with actual image URL for Avinash Pawar -->
+        <img src="https://ui-avatars.com/api/?name=Avinash+Pawar&background=4A2C17&color=F2C96B&size=120" alt="Avinash Pawar" />
+      </div>
+      <div class="founder-name">Avinash Pawar</div>
+      <div class="founder-role">CEO & Co-Founder</div>
+      <p class="founder-bio">Agritech visionary with 8+ years in rural supply chains. Passionate about bringing tech to Indian farms.</p>
+      <div class="founder-socials">
+        <a href="#">LinkedIn</a> · <a href="#">Twitter</a>
+      </div>
+    </div>
+
+    <div class="founder-card">
+      <div class="founder-img-wrap">
+        <!-- Replace src with actual image URL for Alok Pawar -->
+        <img src="https://ui-avatars.com/api/?name=Alok+Pawar&background=5A7A3A&color=FAF4E8&size=120" alt="Alok Pawar" />
+      </div>
+      <div class="founder-name">Alok Pawar</div>
+      <div class="founder-role">CTO & Co-Founder</div>
+      <p class="founder-bio">Full-stack engineer & IoT enthusiast. Built AgroRent's platform from scratch with a farmer-first design philosophy.</p>
+      <div class="founder-socials">
+        <a href="#">LinkedIn</a> · <a href="#">Twitter</a>
+      </div>
+    </div>
+
+    <div class="founder-card">
+      <div class="founder-img-wrap">
+        <!-- Replace src with actual image URL for Shubham Jawale -->
+        <img src="https://ui-avatars.com/api/?name=Shubham+Jawale&background=D4882B&color=2C1A0E&size=120" alt="Shubham Jawale" />
+      </div>
+      <div class="founder-name">Shubham Jawale</div>
+      <div class="founder-role">COO & Co-Founder</div>
+      <p class="founder-bio">Operations & logistics expert. Manages AgroRent's 28-district fleet network with a focus on same-day delivery.</p>
+      <div class="founder-socials">
+        <a href="#">LinkedIn</a> · <a href="#">Twitter</a>
+      </div>
+    </div>
+
+    <div class="founder-card">
+      <div class="founder-img-wrap">
+        <!-- Replace src with actual image URL for Abhishek Raut -->
+        <img src="https://ui-avatars.com/api/?name=Abhishek+Raut&background=7FB040&color=1E1206&size=120" alt="Abhishek Raut" />
+      </div>
+      <div class="founder-name">Abhishek Raut</div>
+      <div class="founder-role">CMO & Co-Founder</div>
+      <p class="founder-bio">Marketing strategist with roots in rural Maharashtra. Bridges the gap between farmers and technology through storytelling.</p>
+      <div class="founder-socials">
+        <a href="#">LinkedIn</a> · <a href="#">Twitter</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── CONTACT ── -->
+<section id="contact">
+  <div class="section-label" style="text-align:center">Get In Touch</div>
+  <h2 class="section-title" style="max-width:100%; text-align:center;">Ready to <em>Rent?</em></h2>
+  <p class="contact-sub">Fill in your details and we'll call you back within 2 hours to confirm availability and pricing in your area.</p>
+  <form class="contact-form" onsubmit="handleSubmit(event)">
+    <div class="form-row">
+      <input type="text" placeholder="Your Full Name" required />
+      <input type="tel" placeholder="Mobile Number" required />
+    </div>
+    <select required>
+      <option value="" disabled selected>Select Equipment</option>
+      <option>Heavy Duty Tractor</option>
+      <option>Combine Harvester</option>
+      <option>Drip Irrigation Kit</option>
+      <option>Agri Drone (Sprayer)</option>
+      <option>Rotavator</option>
+      <option>Seed Drill Machine</option>
+      <option>Mini Tractor (25HP)</option>
+      <option>Power Thresher</option>
+    </select>
+    <div class="form-row">
+      <input type="date" required />
+      <input type="number" placeholder="Rental Days" min="1" required />
+    </div>
+    <input type="text" placeholder="Village / Taluka / District" required />
+    <textarea placeholder="Any special requirements or questions..."></textarea>
+    <button type="submit" class="btn-submit">📞 Request a Callback</button>
+  </form>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <span class="nav-logo">Agro<span>Rent</span></span>
+      <p>Making modern farm equipment accessible to every Indian farmer — one rental at a time.</p>
+    </div>
+    <div class="footer-links">
+      <h4>Equipment</h4>
+      <ul>
+        <li><a href="#">Tractors</a></li>
+        <li><a href="#">Harvesters</a></li>
+        <li><a href="#">Drones</a></li>
+        <li><a href="#">Irrigation</a></li>
+        <li><a href="#">Threshers</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="#founders">About Us</a></li>
+        <li><a href="#">Careers</a></li>
+        <li><a href="#">Blog</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>Support</h4>
+      <ul>
+        <li><a href="#">FAQs</a></li>
+        <li><a href="#">Terms</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Cancellation Policy</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 AgroRent Pvt. Ltd. All rights reserved.</span>
+    <span>🌾 Made with love for Indian farmers</span>
+  </div>
+</footer>
+
+<!-- ── MODAL ── -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h2>Book Equipment</h2>
+    <p id="modal-subtitle">Complete your rental booking below.</p>
+    <div class="modal-form">
+      <input type="text" placeholder="Your Name" required />
+      <input type="tel" placeholder="Mobile Number" required />
+      <input type="text" placeholder="Your Village / District" required />
+      <input type="date" />
+      <input type="number" placeholder="Number of Days" min="1" value="1" />
+      <button class="btn-rent" onclick="confirmBooking()" style="margin-top:0.5rem;">✅ Confirm Booking</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function openModal(name, price) {
+    document.getElementById('modal-subtitle').textContent = name + ' — ' + price;
+    document.getElementById('modal').classList.add('open');
+  }
+  function closeModal() {
+    document.getElementById('modal').classList.remove('open');
+  }
+  document.getElementById('modal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+  function confirmBooking() {
+    closeModal();
+    alert('🎉 Booking request received! Our team will call you within 2 hours to confirm.');
+  }
+  function handleSubmit(e) {
+    e.preventDefault();
+    alert('✅ Thank you! We will call you back within 2 hours to confirm your equipment rental.');
+    e.target.reset();
+  }
+
+  // Scroll-reveal animation
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.animation = 'fadeUp 0.6s ease both';
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.equip-card, .step-card, .slogan-card, .testi-card, .founder-card')
+    .forEach(el => {
+      el.style.opacity = '0';
+      observer.observe(el);
+    });
+</script>
+</body>
+</html>
